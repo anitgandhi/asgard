@@ -25,12 +25,12 @@ aesguard is a `package aes` drop-in replacement, so you can just replace `crypto
 
 Additionally, the returned cipher object has a method `Destroy()`, which will destroy the enc/dec schedule buffers. This method can't be reached since it's hidden behind the unexported concrete types. So, there's an exported function `aesguard.DestroyCipher` you can call after you're completely done using the AES block.
 
+See an example here: https://github.com/anitgandhi/fpe-fun/blob/1f75fcbb86beaa5cf4a5e177b5542a1e9e33bcb5/cmd/fpe-aesguard/main.go
+
 ## Notes
 
 The amd64 optimized implementation could be ported because `golang.org/x/sys/cpu` provides the necessary CPU feature detection for AES-NI and PCMUL.
 
 Unfortunately, it's hard to provide optimized implementations for the other platforms until `golang.org/x/sys/cpu` provides the CPU feature flags for them.
 
-## TODO
-
-CTR/GCM XORKeyStream protection?
+The GCM key schedule/stream is also protected, since it uses the same encryption key schedule already generated.
