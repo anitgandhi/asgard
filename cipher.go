@@ -6,7 +6,10 @@ package aes
 
 import (
 	"crypto/cipher"
+	"errors"
 	"strconv"
+
+	"github.com/awnumar/memguard"
 )
 
 // The AES block size in bytes.
@@ -14,8 +17,10 @@ const BlockSize = 16
 
 // A cipher is an instance of AES encryption using a particular key.
 type aesCipher struct {
-	enc []uint32
-	dec []uint32
+	enc             []uint32
+	dec             []uint32
+	encLockedBuffer *memguard.LockedBuffer
+	decLockedBuffer *memguard.LockedBuffer
 }
 
 type KeySizeError int
@@ -47,7 +52,12 @@ func newCipherGeneric(key []byte) (cipher.Block, error) {
 		return nil, err
 	}
 
-	c := aesCipher{encScheduleUint32, decScheduleUint32}
+	c := aesCipher{
+		enc:             encScheduleUint32,
+		dec:             decScheduleUint32,
+		encLockedBuffer: encScheduleBuffer,
+		decLockedBuffer: decScheduleBuffer,
+	}
 	expandKeyGo(keyBuffer.Buffer(), c.enc, c.dec)
 
 	err = finalizeMemguard(keyBuffer, encScheduleBuffer, decScheduleBuffer)
@@ -78,4 +88,28 @@ func (c *aesCipher) Decrypt(dst, src []byte) {
 		panic("crypto/aes: output not full block")
 	}
 	decryptBlockGo(c.dec, dst, src)
+}
+
+// Destroy destroys the encryption and decryption key schedule LockedBuffers
+func (c *aesCipher) Destroy() {
+	c.encLockedBuffer.Destroy()
+	c.decLockedBuffer.Destroy()
+}
+
+// DestroyCipher is a helper function that
+// calls the appropriate Destroy method of the given block
+func DestroyCipher(block cipher.Block) error {
+
+	switch block.(type) {
+	case *aesCipher:
+		block.(*aesCipher).Destroy()
+	case *aesCipherAsm:
+		block.(*aesCipherAsm).Destroy()
+	case *aesCipherGCM:
+		block.(*aesCipherGCM).Destroy()
+	default:
+		return errors.New("block is not an aesguard cipher")
+	}
+
+	return nil
 }

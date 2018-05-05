@@ -59,6 +59,12 @@ func (c *aesCipherGCM) NewGCM(nonceSize int) (cipher.AEAD, error) {
 	return g, nil
 }
 
+// Destroy destroys the encryption and decryption key schedule LockedBuffers
+func (c *aesCipherGCM) Destroy() {
+	c.encLockedBuffer.Destroy()
+	c.decLockedBuffer.Destroy()
+}
+
 type gcmAsm struct {
 	// ks is the key schedule, the length of which depends on the size of
 	// the AES key.

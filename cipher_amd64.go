@@ -34,6 +34,8 @@ func newCipher(key []byte) (cipher.Block, error) {
 	c := aesCipherAsm{}
 	c.enc = encScheduleUint32
 	c.dec = decScheduleUint32
+	c.encLockedBuffer = encScheduleBuffer
+	c.decLockedBuffer = decScheduleBuffer
 
 	rounds := 10
 	switch len(keyBuffer.Buffer()) {
@@ -79,6 +81,12 @@ func (c *aesCipherAsm) Decrypt(dst, src []byte) {
 		panic("crypto/aes: output not full block")
 	}
 	decryptBlockAsm(len(c.dec)/4-1, &c.dec[0], &dst[0], &src[0])
+}
+
+// Destroy destroys the encryption and decryption key schedule LockedBuffers
+func (c *aesCipherAsm) Destroy() {
+	c.encLockedBuffer.Destroy()
+	c.decLockedBuffer.Destroy()
 }
 
 // expandKey is used by BenchmarkExpand to ensure that the asm implementation

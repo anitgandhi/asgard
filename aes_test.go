@@ -385,7 +385,7 @@ func BenchmarkDecrypt(b *testing.B) {
 func BenchmarkExpand(b *testing.B) {
 	tt := encryptTests[0]
 	n := len(tt.key) + 28
-	c := &aesCipher{make([]uint32, n), make([]uint32, n)}
+	c := &aesCipher{make([]uint32, n), make([]uint32, n), nil, nil}
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		expandKey(tt.key, c.enc, c.dec)
