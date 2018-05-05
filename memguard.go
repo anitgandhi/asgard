@@ -1,4 +1,4 @@
-package aes
+package aesguard
 
 import (
 	"github.com/awnumar/memguard"

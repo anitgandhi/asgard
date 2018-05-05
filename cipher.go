@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package aes
+package aesguard
 
 import (
 	"crypto/cipher"
@@ -12,7 +12,7 @@ import (
 	"github.com/awnumar/memguard"
 )
 
-// The AES block size in bytes.
+// BlockSize is the AES block size in bytes.
 const BlockSize = 16
 
 // A cipher is an instance of AES encryption using a particular key.
@@ -23,6 +23,7 @@ type aesCipher struct {
 	decLockedBuffer *memguard.LockedBuffer
 }
 
+// KeySizeError is an error message for invalid AES key sizes
 type KeySizeError int
 
 func (k KeySizeError) Error() string {

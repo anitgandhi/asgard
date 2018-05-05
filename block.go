@@ -34,7 +34,7 @@
 //	http://www.csrc.nist.gov/publications/fips/fips197/fips-197.pdf
 //	http://csrc.nist.gov/archive/aes/rijndael/Rijndael-ammended.pdf
 
-package aes
+package aesguard
 
 // Encrypt one block from src into dst, using the expanded key xk.
 func encryptBlockGo(xk []uint32, dst, src []byte) {

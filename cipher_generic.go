@@ -4,7 +4,7 @@
 
 // +build !amd64
 
-package aes
+package aesguard
 
 import (
 	"crypto/cipher"
