@@ -25,7 +25,7 @@ asgard is a `package aes` drop-in replacement, so you can just replace `crypto/a
 
 Additionally, the returned cipher object has a method `Destroy()`, which will destroy the enc/dec schedule buffers. This method can't be reached since it's hidden behind the unexported concrete types. So, there's an exported function `asgard.DestroyCipher` you can call after you're completely done using the AES block.
 
-See an example here: https://github.com/anitgandhi/fpe-fun/blob/1f75fcbb86beaa5cf4a5e177b5542a1e9e33bcb5/cmd/fpe-asgard/main.go
+See an example here: https://github.com/anitgandhi/fpe-fun/blob/278ce577c7587df60fa7575b36985b9c5261e8e4/cmd/fpe-asgard/main.go
 
 ## Notes 
 
@@ -39,9 +39,9 @@ The GCM key schedule/stream is also protected, since it uses the same encryption
 
 Important: the original key slice (`key []byte`) that is passed comes from memory managed by the Go runtime. Even after it's wiped, there's always a chance there is a dangling copy of it somewhere in memory or swap files, since it exists prior to involving `memguard`.
 
-Using `memguard` does offer some benefits for "ongoing" protection, but it's not a generic gaurantee, given the nature of `memguard.NewImmutableFromBytes(buf []byte)`.
+Using `memguard` does offer some benefits for "ongoing" protection, but it's not a generic gaurantee, given the nature of Go's memory model. As soon as you have a `[]byte` going into or coming out of `memguard` that results in a copy of the underlying data, it's owned by the Go runtime, and is no longer subject to `memguard` guarantees. [This comment](https://github.com/hashicorp/vault/issues/540#issuecomment-350757998) explains the issue well.
 
-You can _possibly_ (definitely not guaranteed) reduce risk of exposure by somehow ensuring the fixed-size key array remains on the calling function's stack, but even then, stacks can be moved around by the Go runtime transparently.
+You can _possibly_ (definitely not guaranteed) reduce risk of exposure by somehow ensuring the fixed-size key array remains on the calling function's stack, but even then, stacks can be moved around by the Go runtime transparently. See the example link above.
 
 Of course, if you're reading your key from environment variables, config files, or something else, that's always another point of possible exposure.
 
