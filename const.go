@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// Package aesguard implements AES encryption (formerly Rijndael), as defined in
+// Package asgard implements AES encryption (formerly Rijndael), as defined in
 // U.S. Federal Information Processing Standards Publication 197.
 //
 // The AES operations in this package are not implemented using constant-time algorithms.
@@ -13,7 +13,7 @@
 // the GHASH operation used by GCM is also constant-time.
 //
 // The AES key and derived key schedules
-package aesguard
+package asgard
 
 // This file contains AES constants - 8720 bytes of initialized data.
 

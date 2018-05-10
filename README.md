@@ -1,4 +1,4 @@
-# aesguard
+# asgard
 
 This is a proof-of-concept to show how to use [memguard](https://github.com/awnumar/memguard) in tandem with Go's AES crypto primitives, in order to protect the key in memory.
 
@@ -13,7 +13,7 @@ To understand how `memguard` actually protects values in memory, please see its 
 
 Since the API largely remains the same, and the returned cipher object continues to meet the `cipher.Block` interface, this is a drop-in replacement for the existing `crypto/aes` package. 
 
-The package name has been changed to `aesguard` on purpose, since there are some additional APIs, and to avoid confusion.
+The package name has been changed to `asgard` on purpose, since there are some additional APIs, to avoid confusion, and for fun. `asgard ~= aesguard = aes + memguard`.
 
 ## Tests
 
@@ -21,11 +21,11 @@ The unit tests from the standard library were copied here as well. The only modi
 
 ## Usage
 
-aesguard is a `package aes` drop-in replacement, so you can just replace `crypto/aes` imports with `github.com/anitgandhi/aesguard`, and `aes.NewCipher` function calls with `aesguard.NewCipher`
+asgard is a `package aes` drop-in replacement, so you can just replace `crypto/aes` imports with `github.com/anitgandhi/asgard`, and `aes.NewCipher` function calls with `asgard.NewCipher`
 
-Additionally, the returned cipher object has a method `Destroy()`, which will destroy the enc/dec schedule buffers. This method can't be reached since it's hidden behind the unexported concrete types. So, there's an exported function `aesguard.DestroyCipher` you can call after you're completely done using the AES block.
+Additionally, the returned cipher object has a method `Destroy()`, which will destroy the enc/dec schedule buffers. This method can't be reached since it's hidden behind the unexported concrete types. So, there's an exported function `asgard.DestroyCipher` you can call after you're completely done using the AES block.
 
-See an example here: https://github.com/anitgandhi/fpe-fun/blob/1f75fcbb86beaa5cf4a5e177b5542a1e9e33bcb5/cmd/fpe-aesguard/main.go
+See an example here: https://github.com/anitgandhi/fpe-fun/blob/1f75fcbb86beaa5cf4a5e177b5542a1e9e33bcb5/cmd/fpe-asgard/main.go
 
 ## Notes 
 

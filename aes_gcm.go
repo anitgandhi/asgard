@@ -4,7 +4,7 @@
 
 // +build amd64
 
-package aesguard
+package asgard
 
 import (
 	"crypto/cipher"

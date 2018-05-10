@@ -1,4 +1,4 @@
-package aesguard
+package asgard
 
 import (
 	"github.com/awnumar/memguard"

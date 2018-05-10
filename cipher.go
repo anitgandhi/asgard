@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package aesguard
+package asgard
 
 import (
 	"crypto/cipher"
@@ -109,7 +109,7 @@ func DestroyCipher(block cipher.Block) error {
 	case *aesCipherGCM:
 		block.(*aesCipherGCM).Destroy()
 	default:
-		return errors.New("block is not an aesguard cipher")
+		return errors.New("block is not an asgard cipher")
 	}
 
 	return nil
