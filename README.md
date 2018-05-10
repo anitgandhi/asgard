@@ -21,16 +21,32 @@ The unit tests from the standard library were copied here as well. The only modi
 
 ## Usage
 
-aesguard is a `package aes` drop-in replacement, so you can just replace `crypto/aes` imports with `github.com/anitgandhi/aesguard`, and `aes.NewCipher` function calls with `aesguard.Nipher`
+aesguard is a `package aes` drop-in replacement, so you can just replace `crypto/aes` imports with `github.com/anitgandhi/aesguard`, and `aes.NewCipher` function calls with `aesguard.NewCipher`
 
 Additionally, the returned cipher object has a method `Destroy()`, which will destroy the enc/dec schedule buffers. This method can't be reached since it's hidden behind the unexported concrete types. So, there's an exported function `aesguard.DestroyCipher` you can call after you're completely done using the AES block.
 
 See an example here: https://github.com/anitgandhi/fpe-fun/blob/1f75fcbb86beaa5cf4a5e177b5542a1e9e33bcb5/cmd/fpe-aesguard/main.go
 
-## Notes
+## Notes 
 
 The amd64 optimized implementation could be ported because `golang.org/x/sys/cpu` provides the necessary CPU feature detection for AES-NI and PCMUL.
 
 Unfortunately, it's hard to provide optimized implementations for the other platforms until `golang.org/x/sys/cpu` provides the CPU feature flags for them.
 
 The GCM key schedule/stream is also protected, since it uses the same encryption key schedule already generated.
+
+## Disclaimers
+
+Important: the original key slice (`key []byte`) that is passed comes from memory managed by the Go runtime. Even after it's wiped, there's always a chance there is a dangling copy of it somewhere in memory or swap files, since it exists prior to involving `memguard`.
+
+Using `memguard` does offer some benefits for "ongoing" protection, but it's not a generic gaurantee, given the nature of `memguard.NewImmutableFromBytes(buf []byte)`.
+
+You can _possibly_ (definitely not guaranteed) reduce risk of exposure by somehow ensuring the fixed-size key array remains on the calling function's stack, but even then, stacks can be moved around by the Go runtime transparently.
+
+Of course, if you're reading your key from environment variables, config files, or something else, that's always another point of possible exposure.
+
+tl;dr the key is still coming from a Go runtime managed `[]byte` slice, so that's always going to be a point of possible exposure.
+
+## TODO
+
+Add a `NewCipherWithLockedBuffer` function to take an existing `*memguard.LockedBuffer` that's separately populated with a key by some other means. 
